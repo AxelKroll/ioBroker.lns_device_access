@@ -1,0 +1,86 @@
+{
+    "common": {
+        "name": "lns_device_access",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "LNS Device Access",
+        "titleLang": {
+            "en": "LNS Device Access",
+            "de": "LNS-Gerätezugriff",
+            "ru": "Доступ к LNS-устройству",
+            "pt": "Acesso ao Dispositivo LNS",
+            "nl": "Toegang tot LNS-apparaat",
+            "fr": "Accès aux appareils LNS",
+            "it": "Accesso al dispositivo LNS",
+            "es": "Acceso a dispositivos LNS",
+            "pl": "Dostęp do urządzenia LNS",
+            "zh-cn": "LNS 设备接入"
+        },
+        "desc": {
+            "en": "lns_device_access",
+            "de": "lns_device_access",
+            "ru": "lns_device_access",
+            "pt": "lns_device_access",
+            "nl": "lns_device_access",
+            "fr": "lns_device_access",
+            "it": "lns_device_access",
+            "es": "lns_device_access",
+            "pl": "Dostęp do lns_urządzenia",
+            "zh-cn": "lns_device_access"
+        },
+        "authors": [
+            "Axel Kroll <ak@krollmc.com>"
+        ],
+        "keywords": [
+            "ioBroker",
+            "template",
+            "Smart Home",
+            "home automation"
+        ],
+        "license": "Apache-2.0",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "lns_device_access.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/AxelKroll/ioBroker.lns_device_access/main/admin/lns_device_access.png",
+        "readme": "https://github.com/AxelKroll/ioBroker.lns_device_access/blob/main/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "iot-systems",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "poll",
+        "adminUI": {
+            "config": "json"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=3.3.22"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.1.13"
+            }
+        ]
+    },
+    "native": {
+        "option1": true,
+        "option2": "42"
+    },
+    "objects": [],
+    "instanceObjects": []
+}
