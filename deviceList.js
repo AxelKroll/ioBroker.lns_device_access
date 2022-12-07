@@ -2,7 +2,7 @@
 
 const {readFileSync} = require("fs");
 
-function readDevices( this, sPath ) {
+function readDevices( outerThis, sPath ) {
 
     const deviceFn = sPath + "/objects/manageddevices.csv";
 
@@ -25,7 +25,7 @@ function readDevices( this, sPath ) {
 
             const sStateName = "[" + sId + "]"
 
-            this.setObjectNotExistsAsync(sStateName, {
+            outerThis.setObjectNotExistsAsync(sStateName, {
                 type: "state",
                 common: {
                     name: sName,
@@ -38,7 +38,7 @@ function readDevices( this, sPath ) {
             });
     
             // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-            this.subscribeStates(sStateName);
+            outerThis.subscribeStates(sStateName);
     
         }
     });
