@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "lns_device_access",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "news": {
-            "0.0.1": {
+            "0.0.4": {
                 "en": "initial release",
                 "de": "Erstveröffentlichung",
                 "ru": "Начальная версия",

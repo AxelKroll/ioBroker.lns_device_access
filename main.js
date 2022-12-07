@@ -11,6 +11,8 @@ const utils = require("@iobroker/adapter-core");
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
+import { readDevices } from "./deviceList";
+
 class LnsDeviceAccess extends utils.Adapter {
 
     /**
@@ -43,6 +45,8 @@ class LnsDeviceAccess extends utils.Adapter {
         Here a simple template for a boolean variable named "testVariable"
         Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
         */
+
+        readDevices( this.config.communication_directory);
 
         await this.setObjectNotExistsAsync("dev1", {
             type: "state",
