@@ -2,7 +2,7 @@
 
 const {readFileSync} = require("fs");
 
-function readDevices( sPath ) {
+function readDevices( this, sPath ) {
 
     const deviceFn = sPath + "/objects/manageddevices.csv";
 
