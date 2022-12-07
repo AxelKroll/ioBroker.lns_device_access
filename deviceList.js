@@ -13,35 +13,34 @@ function readDevices( outerThis, sPath ) {
     let isHeader = true;
 
     deviceInfos.forEach(sLine => {
-        if (isHeader) 
-             isHeader = false;
+        if (isHeader)
+            isHeader = false;
         else {
             const sParts = sLine.split("|");
             const sId = sParts[0];
-            const sName = sParts[1];
-            const sDevice = sParts[2];
-            const sFB = sParts[3];
-            const sVar = sParts[4];
+            if (sId.length > 0 )
+            {
+                const sName = sParts[1];
+                //const sDevice = sParts[2];
+                //const sFB = sParts[3];
+                //const sVar = sParts[4];
 
-            const sStateName = "[" + sId + "]"
-
-            outerThis.setObjectNotExistsAsync(sStateName, {
-                type: "state",
-                common: {
-                    name: sName,
-                    type: "number",
-                    role: "indicator",
-                    read: true,
-                    write: true,
-                },
-                native: {},
-            });
-    
-            // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-            outerThis.subscribeStates(sStateName);
-    
+                const sStateName = "(" + sId + ")";
+                outerThis.setObjectNotExistsAsync(sStateName, {
+                    type: "state",
+                    common: {
+                        name: sName,
+                        type: "number",
+                        role: "indicator",
+                        read: true,
+                        write: true,
+                    },
+                    native: {},
+                });
+                outerThis.subscribeStates(sStateName);
+            }
         }
     });
 }
 
-export{ readDevices}   
+module.exports = readDevices;
