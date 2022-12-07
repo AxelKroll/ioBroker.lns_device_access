@@ -46,7 +46,7 @@ class LnsDeviceAccess extends utils.Adapter {
         Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
         */
 
-        readDevices( this, this.config.communication_directory);
+        //readDevices( this, this.config.communication_directory);
 
         await this.setObjectNotExistsAsync("dev1", {
             type: "state",
