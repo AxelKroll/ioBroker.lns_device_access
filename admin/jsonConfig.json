@@ -6,9 +6,5 @@
             "type": "text",
             "label": "Communication directory:",
             "newLine": false
-        },
-        "browse_dir"{
-            "type": "select",
-            "label": "..."
-    }
+        }
 }
