@@ -79,7 +79,8 @@
     },
     "native": {
         "communication_directory": "/mnt/LNSServer/LNSServer",
-        "update_seconds":1
+        "update_seconds":1,
+        "deviceList":""
     },
     "objects": [],
     "instanceObjects": []

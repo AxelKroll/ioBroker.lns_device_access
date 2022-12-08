@@ -34,6 +34,9 @@ class LnsDeviceAccess extends utils.Adapter {
         const deviceData = readFileSync(deviceFn, "utf-8");
         const deviceInfos = deviceData.split(/\r?\n/ );
 
+        const oldDeviceList = this.config.deviceList;
+        let newDeviceList = "";
+
         let isHeader = true;
         deviceInfos.forEach(sLine => {
             if (isHeader)
@@ -49,6 +52,7 @@ class LnsDeviceAccess extends utils.Adapter {
                     //const sFB = sParts[3];
                     //const sVar = sParts[4];
 
+                    newDeviceList = newDeviceList + "|" + sId + "|";
                     const sStateName = "(" + sId + ")";
                     this.setObjectNotExistsAsync(sStateName, {
                         type: "state",
@@ -65,19 +69,38 @@ class LnsDeviceAccess extends utils.Adapter {
                 }
             }
         });
+
+        this.log.info(`oldDeviceList = ${oldDeviceList}, newDeviceList = ${newDeviceList}`);
+
+        const oldIds = oldDeviceList.split("|");
+        oldIds.forEach(oldId => {
+            if (oldId.length > 0 ){
+                const searchId = "|" + oldId + "|";
+                if ( newDeviceList.search(searchId) < 0) {
+                    this.log.info(`id ${oldId} deleted`);
+                }
+            }
+        });
+        this.config.deviceList = newDeviceList;
     }
 
     pollDevices( )
     {
-        const deviceFn = this.config.communication_directory + "/objects/devicevalues.idx";
+        const deviceFn = this.config.communication_directory + "/objects/devicevalues.csv";
 
-        const deviceValues = readFileSync(deviceFn, {flag:"r"});
+        const deviceData = readFileSync(deviceFn, {encoding:"utf-8",flag:"r"});
+        const deviceValues = deviceData.split(/\r?\n/ );
 
-        for (let i = 0; i < deviceValues.length; i++) {
-            const value = deviceValues[i];
-            const stateId = "(" + (i+1) + ")";
-            this.setState( stateId, value, true);
+        deviceValues.forEach(sLine => {
+            const sParts = sLine.split("|");
+            let sId = sParts[0];
+            if (sId.length > 0){
+                const sValue = sParts[1];
+                sId = "(" + sId + ")";
+                this.setState( sId, sValue, true);
+            }
         }
+        );
     }
 
     setDeviceValue( id, value)

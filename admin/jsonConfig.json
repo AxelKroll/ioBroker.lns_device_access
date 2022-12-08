@@ -11,5 +11,10 @@
         "type": "number",
         "label" : "update seconds:",
         "newLine" : false
-     }} 
+     },
+    "deviceList":{
+        "type": "text",
+        "label": "deviceList",
+        "hidden": "false"
+    }} 
 }
