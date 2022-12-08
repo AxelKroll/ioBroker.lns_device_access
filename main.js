@@ -8,7 +8,8 @@
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
 
-const {readFileSync} = require("fs");
+const {readFileSync, writeFileSync} = require("fs");
+
 
 class LnsDeviceAccess extends utils.Adapter {
 
@@ -74,11 +75,22 @@ class LnsDeviceAccess extends utils.Adapter {
 
         for (let i = 0; i < deviceValues.length; i++) {
             const value = deviceValues[i];
-            this.setState( "(" + (i+1) + ")", value);
+            const stateId = "(" + (i+1) + ")";
+            this.setState( stateId, value, true);
         }
-
     }
 
+    setDeviceValue( id, value)
+    {
+        const requestFn = this.config.communication_directory + "/requests/" + id + ".req";
+
+        const idParts = id.split("(");
+        let sId = idParts[1];
+        sId = sId.substr(0,sId.length-1);
+        const sRequest = sId + "|" + value;
+
+        writeFileSync(requestFn, sRequest);
+    }
     /**
      * Is called when databases are connected and adapter received configuration.
      */
@@ -98,7 +110,7 @@ class LnsDeviceAccess extends utils.Adapter {
         this.readDevices( );
         this.pollDevices( );
 
-        this.pollingInterval = setInterval(this.pollDevices, this.config.update_seconds * 1000 );
+        this.pollingInterval = setInterval(() => this.pollDevices(),this.config.update_seconds * 1000);
     }
 
     /**
@@ -122,9 +134,12 @@ class LnsDeviceAccess extends utils.Adapter {
     onStateChange(id, state) {
         if (state) {
             // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            if (!state.ack) {
+                this.setDeviceValue( id, state.val);
+            }
         } else {
-            // The state was deleted
+            // The state was deleted, dont follow anymore
+            this.unsubscribeStates(id);
             this.log.info(`state ${id} deleted`);
         }
     }
