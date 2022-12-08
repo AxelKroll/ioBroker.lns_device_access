@@ -6,5 +6,10 @@
             "type": "text",
             "label": "Communication directory:",
             "newLine": false
-        } }
+        },
+     "update_seconds": {
+        "type": "number",
+        "label" : "update seconds:",
+        "newLine" : false
+     }} 
 }

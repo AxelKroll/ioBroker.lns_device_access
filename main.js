@@ -8,10 +8,7 @@
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
 
-// Load your modules here, e.g.:
-// const fs = require("fs");
-
-const readDevices = require("./deviceList.js");
+const {readFileSync} = require("fs");
 
 class LnsDeviceAccess extends utils.Adapter {
 
@@ -30,6 +27,58 @@ class LnsDeviceAccess extends utils.Adapter {
         this.on("unload", this.onUnload.bind(this));
     }
 
+    readDevices( ) {
+
+        const deviceFn = this.config.communication_directory + "/objects/manageddevices.csv";
+        const deviceData = readFileSync(deviceFn, "utf-8");
+        const deviceInfos = deviceData.split(/\r?\n/ );
+
+        let isHeader = true;
+        deviceInfos.forEach(sLine => {
+            if (isHeader)
+                // skip the header line
+                isHeader = false;
+            else {
+                const sParts = sLine.split("|");
+                const sId = sParts[0];
+                if (sId.length > 0 )
+                {
+                    const sName = sParts[1];
+                    //const sDevice = sParts[2];
+                    //const sFB = sParts[3];
+                    //const sVar = sParts[4];
+
+                    const sStateName = "(" + sId + ")";
+                    this.setObjectNotExistsAsync(sStateName, {
+                        type: "state",
+                        common: {
+                            name: sName,
+                            type: "number",
+                            role: "level",
+                            read: true,
+                            write: true,
+                        },
+                        native: {},
+                    });
+                    this.subscribeStates(sStateName);
+                }
+            }
+        });
+    }
+
+    pollDevices( )
+    {
+        const deviceFn = this.config.communication_directory + "/objects/devicevalues.idx";
+
+        const deviceValues = readFileSync(deviceFn, {flag:"r"});
+
+        for (let i = 0; i < deviceValues.length; i++) {
+            const value = deviceValues[i];
+            this.setState( "(" + (i+1) + ")", value);
+        }
+
+    }
+
     /**
      * Is called when databases are connected and adapter received configuration.
      */
@@ -46,10 +95,10 @@ class LnsDeviceAccess extends utils.Adapter {
         Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
         */
 
-        readDevices( this, this.config.communication_directory);
-        // the variable testVariable is set to true as command (ack=false)
-        // await this.setStateAsync("dev1", 100);
+        this.readDevices( );
+        this.pollDevices( );
 
+        this.pollingInterval = setInterval(this.pollDevices, this.config.update_seconds * 1000 );
     }
 
     /**
@@ -58,34 +107,12 @@ class LnsDeviceAccess extends utils.Adapter {
      */
     onUnload(callback) {
         try {
-            // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            // clearInterval(interval1);
-
+            clearInterval(this.pollingInterval);
             callback();
         } catch (e) {
             callback();
         }
     }
-
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  * @param {string} id
-    //  * @param {ioBroker.Object | null | undefined} obj
-    //  */
-    // onObjectChange(id, obj) {
-    //     if (obj) {
-    //         // The object was changed
-    //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    //     } else {
-    //         // The object was deleted
-    //         this.log.info(`object ${id} deleted`);
-    //     }
-    // }
 
     /**
      * Is called if a subscribed state changes
@@ -101,24 +128,6 @@ class LnsDeviceAccess extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
     }
-
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-    // /**
-    //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-    //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-    //  * @param {ioBroker.Message} obj
-    //  */
-    // onMessage(obj) {
-    //     if (typeof obj === "object" && obj.message) {
-    //         if (obj.command === "send") {
-    //             // e.g. send email or pushover or whatever
-    //             this.log.info("send command");
-
-    //             // Send response in callback if required
-    //             if (obj.callback) this.sendTo(obj.from, obj.command, "Message received", obj.callback);
-    //         }
-    //     }
-    // }
 
 }
 
