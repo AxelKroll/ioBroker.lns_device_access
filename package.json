@@ -1,6 +1,6 @@
 {
   "name": "iobroker.lns_device_access",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "lns_device_access",
   "author": {
     "name": "Axel Kroll",

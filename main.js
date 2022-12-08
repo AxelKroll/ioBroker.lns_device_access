@@ -52,7 +52,7 @@ class LnsDeviceAccess extends utils.Adapter {
                     //const sFB = sParts[3];
                     //const sVar = sParts[4];
 
-                    newDeviceList = newDeviceList + "|" + sId + "|";
+                    newDeviceList = newDeviceList + "," + sId + ",";
                     const sStateName = "(" + sId + ")";
                     this.setObjectNotExistsAsync(sStateName, {
                         type: "state",
@@ -70,18 +70,26 @@ class LnsDeviceAccess extends utils.Adapter {
             }
         });
 
-        this.log.info(`oldDeviceList = ${oldDeviceList}, newDeviceList = ${newDeviceList}`);
-
-        const oldIds = oldDeviceList.split("|");
-        oldIds.forEach(oldId => {
-            if (oldId.length > 0 ){
-                const searchId = "|" + oldId + "|";
-                if ( newDeviceList.search(searchId) < 0) {
-                    this.log.info(`id ${oldId} deleted`);
+        // if devices have changed we analyze the changes and try to delete the superflous devices
+        if (!(newDeviceList === oldDeviceList)){
+            const oldIds = oldDeviceList.split(",");
+            oldIds.forEach(oldId => {
+                if (oldId.length > 0 ){
+                    const searchId = "," + oldId + ",";
+                    const pos = newDeviceList.search(searchId);
+                    if ( pos < 0) {
+                        oldId = "(" + oldId + ")";
+                        this.log.info(`id ${oldId} deleted`);
+                        this.delObjectAsync( oldId );
+                    }
                 }
-            }
-        });
-        this.config.deviceList = newDeviceList;
+            });
+
+            const newConfig = this.config;
+            newConfig.deviceList = newDeviceList;
+            this.updateConfig( newConfig);
+        }
+
     }
 
     pollDevices( )
@@ -97,7 +105,7 @@ class LnsDeviceAccess extends utils.Adapter {
             if (sId.length > 0){
                 const sValue = sParts[1];
                 sId = "(" + sId + ")";
-                this.setState( sId, sValue, true);
+                this.setState( sId, +sValue, true);
             }
         }
         );

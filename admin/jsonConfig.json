@@ -15,6 +15,6 @@
     "deviceList":{
         "type": "text",
         "label": "deviceList",
-        "hidden": "false"
+        "hidden": "true"
     }} 
 }
