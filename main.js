@@ -106,7 +106,6 @@ class LnsDeviceAccess extends utils.Adapter {
                 const sValue = sParts[1];
                 sId = "(" + sId + ")";
                 this.setState( sId, +sValue, true);
-                this.log.info(`id ${sId} set to ${sValue}`);
             }
         }
         );
@@ -120,6 +119,8 @@ class LnsDeviceAccess extends utils.Adapter {
         let sId = idParts[1];
         sId = sId.substr(0,sId.length-1);
         const sRequest = sId + "|" + value;
+
+        this.log.info(`id ${sId} set to ${value}`);
 
         writeFileSync(requestFn, sRequest);
     }
