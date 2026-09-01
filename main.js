@@ -106,6 +106,7 @@ class LnsDeviceAccess extends utils.Adapter {
                 const sValue = sParts[1];
                 sId = "(" + sId + ")";
                 this.setState( sId, +sValue, true);
+                this.log.info(`id ${sId} set to ${sValue}`);
             }
         }
         );
